@@ -1,342 +1,381 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useCallback, useEffect, useRef, useState } from "react";
-import { ROUNDS, QUOTES, edgeKey, type ShapeRound } from "../lib/shapes";
-import pandaHug from "@/assets/momo.png";
-import { ArrowLeft, Play as PlayIcon, Sparkles } from "lucide-react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { Heart, Play, RotateCcw, Star, Volume2 } from "lucide-react";
+import momo from "@/assets/momo.png";
+import {
+  buildRounds,
+  QUOTES,
+  TOTAL_ROUNDS,
+  TUNE_BY_ID,
+  type Round,
+} from "@/lib/tunes";
+import {
+  playChime,
+  playTune,
+  primeAudio,
+  stopTune,
+  type TuneId,
+} from "@/lib/natureSounds";
 
 export const Route = createFileRoute("/play2")({
   head: () => ({
     meta: [
-      { title: "Play Festival Puzzle — Gentle Shape Game" },
+      { title: "Tune With Me - A Gentle Nature Sound Game" },
       {
         name: "description",
         content:
-          "Slide from dot to dot to copy each shape. Five calm rounds designed for memory care, with points and a kind word at the end.",
+          "Tune With Me is a calm, picture-based listening game. Hear rain, waterfalls, leaves and more, then tap the picture that matches the sound.",
       },
-      { property: "og:title", content: "Play Festival Puzzle — Gentle Shape Game" },
+      { property: "og:title", content: "Tune With Me - A Gentle Nature Sound Game" },
       {
         property: "og:description",
         content:
-          "Slide from dot to dot to copy each shape. Five calm rounds designed for memory care, with points and a kind word at the end.",
+          "A soothing five-round nature listening game designed for calm, joyful play.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
-  component: Play4Container,
+  component: Index,
 });
 
-const FAVORITES_KEY = "momo-favorite-rounds";
+type Screen = "intro" | "play" | "done";
+type Phase = "listen" | "choose" | "feedback";
 
-type Favorite = { date: string; score: number; quote: string };
+const FAV_KEY = "tune-with-me-favorites";
+
+function Index() {
+  const [screen, setScreen] = useState<Screen>("intro");
+  const [rounds, setRounds] = useState<Round[]>([]);
+  const [index, setIndex] = useState(0);
+  const [phase, setPhase] = useState<Phase>("listen");
+  const [picked, setPicked] = useState<TuneId | null>(null);
+  const [score, setScore] = useState(0);
+  const [favorites, setFavorites] = useState<TuneId[]>([]);
+  const [quote, setQuote] = useState(QUOTES[0]!);
+  const timers = useRef<number[]>([]);
+
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem(FAV_KEY);
+      if (raw) setFavorites(JSON.parse(raw) as TuneId[]);
+    } catch {
+      /* ignore */
+    }
+  }, []);
+
+  useEffect(
+    () => () => {
+      timers.current.forEach(window.clearTimeout);
+      stopTune(0.2);
+    },
+    [],
+  );
+
+  const round = rounds[index];
+
+  const start = () => {
+    primeAudio();
+    setRounds(buildRounds());
+    setIndex(0);
+    setScore(0);
+    setPicked(null);
+    setPhase("listen");
+    setScreen("play");
+  };
+
+  const listen = () => {
+    if (!round) return;
+    primeAudio();
+    playTune(round.answer.id);
+    setPhase("listen");
+    const t = window.setTimeout(() => {
+      stopTune(1.2);
+      setPhase("choose");
+    }, 7000);
+    timers.current.push(t);
+  };
+
+  const choose = (id: TuneId) => {
+    if (!round || phase === "feedback") return;
+    stopTune(0.3);
+    setPicked(id);
+    setPhase("feedback");
+    const correct = id === round.answer.id;
+    if (correct) setScore((s) => s + 20);
+    playChime(correct);
+    const t = window.setTimeout(() => {
+      if (index + 1 >= TOTAL_ROUNDS) {
+        setQuote(QUOTES[Math.floor(Math.random() * QUOTES.length)]!);
+        setScreen("done");
+      } else {
+        setIndex((i) => i + 1);
+        setPicked(null);
+        setPhase("listen");
+      }
+    }, 2200);
+    timers.current.push(t);
+  };
+
+  const toggleFavorite = (id: TuneId) => {
+    setFavorites((prev) => {
+      const next = prev.includes(id)
+        ? prev.filter((f) => f !== id)
+        : [...prev, id];
+      try {
+        localStorage.setItem(FAV_KEY, JSON.stringify(next));
+      } catch {
+        /* ignore */
+      }
+      return next;
+    });
+  };
+
+  return (
+    <main className="min-h-screen bg-background px-4 py-8">
+      <div className="mx-auto w-full max-w-3xl">
+        {screen === "intro" && <Intro onStart={start} />}
+
+        {screen === "play" && round && (
+          <section className="flex flex-col items-center gap-8">
+            <Progress index={index} />
+
+            <img
+              src={momo}
+              alt="Momo the red panda"
+              width={1024}
+              height={1024}
+              className="h-40 w-40 object-contain drop-shadow-sm sm:h-48 sm:w-48"
+            />
+
+            {phase === "listen" ? (
+              <button
+                type="button"
+                onClick={listen}
+                aria-label="Play the sound"
+                className="flex h-40 w-40 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-lg transition-transform hover:scale-105 focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-ring active:scale-95"
+              >
+                <Volume2 className="h-20 w-20" strokeWidth={1.75} />
+              </button>
+            ) : (
+              <SoundWave />
+            )}
+
+            <div
+              className={`grid w-full gap-5 ${
+                round.options.length === 2
+                  ? "grid-cols-2"
+                  : "grid-cols-2 sm:grid-cols-3"
+              }`}
+            >
+              {round.options.map((option) => {
+                const isAnswer = option.id === round.answer.id;
+                const isPicked = option.id === picked;
+                const reveal = phase === "feedback";
+                return (
+                  <button
+                    key={option.id}
+                    type="button"
+                    onClick={() => choose(option.id)}
+                    disabled={phase === "listen"}
+                    aria-label={option.name}
+                    className={`overflow-hidden rounded-3xl border-4 bg-card shadow-md transition-all disabled:opacity-45 ${
+                      reveal && isAnswer
+                        ? "border-success scale-105"
+                        : reveal && isPicked
+                          ? "border-destructive opacity-70"
+                          : "border-border hover:-translate-y-1 hover:border-primary"
+                    }`}
+                  >
+                    <img
+                      src={option.image}
+                      alt={option.name}
+                      width={768}
+                      height={768}
+                      loading="lazy"
+                      className="aspect-square w-full object-cover"
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          </section>
+        )}
+
+        {screen === "done" && (
+          <Results
+            score={score}
+            quote={quote}
+            rounds={rounds}
+            favorites={favorites}
+            onToggleFavorite={toggleFavorite}
+            onPlayAgain={start}
+          />
+        )}
+      </div>
+    </main>
+  );
+}
 
 function Intro({ onStart }: { onStart: () => void }) {
   return (
-    <main className="relative flex min-h-screen flex-col items-center justify-center px-5 py-8">
-      <div className="pointer-events-none absolute inset-0 bg-[image:var(--gradient-warm)]" aria-hidden />
+    <section className="flex flex-col items-center gap-6 text-center">
+      <img
+        src={momo}
+        alt="Momo the red panda holding a card of music notes"
+        width={1024}
+        height={1024}
+        className="h-64 w-64 object-contain drop-shadow-sm sm:h-80 sm:w-80"
+      />
+      <h1 className="text-5xl font-bold tracking-tight text-foreground sm:text-6xl">
+        Tune With Me
+      </h1>
+      <p className="max-w-md text-xl text-muted-foreground">
+        Take it slow. Little Momo will play a sound from nature just for you.
+      </p>
+      <button
+        type="button"
+        onClick={onStart}
+        className="flex items-center gap-3 rounded-full bg-primary px-10 py-5 text-2xl font-semibold text-primary-foreground shadow-lg transition-transform hover:scale-105 focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-ring active:scale-95"
+      >
+        <Play className="h-7 w-7" fill="currentColor" />
+        Start playing
+      </button>
+    </section>
+  );
+}
 
-      <header className="absolute top-8 left-5">
-        <Link
-          to="/play"
-          className="flex items-center gap-2 text-base font-medium text-muted-foreground underline-offset-4 hover:underline"
-        >
-          <ArrowLeft className="size-4" /> Back to Games
-        </Link>
-      </header>
-
-      <section className="relative flex flex-col items-center gap-6 text-center max-w-md">
-        <img
-          src={pandaHug}
-          alt="Momo the red panda hugging a card"
-          width={1024}
-          height={1024}
-          className="h-64 w-64 object-contain drop-shadow-sm sm:h-80 sm:w-80"
+function Progress({ index }: { index: number }) {
+  return (
+    <div className="flex items-center gap-3" aria-label={`Round ${index + 1} of ${TOTAL_ROUNDS}`}>
+      {Array.from({ length: TOTAL_ROUNDS }).map((_, i) => (
+        <span
+          key={i}
+          className={`h-5 w-5 rounded-full transition-colors ${
+            i < index
+              ? "bg-success"
+              : i === index
+                ? "bg-primary scale-125"
+                : "bg-border"
+          }`}
         />
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Festival Puzzle
-        </h1>
-        <p className="text-lg text-muted-foreground">
-          Take it slow. Slide from dot to dot to copy each shape across five calm rounds.
-        </p>
-        <button
-          type="button"
-          onClick={onStart}
-          className="flex items-center gap-3 rounded-full bg-primary px-10 py-5 text-xl font-semibold text-primary-foreground shadow-lg transition-transform hover:scale-105 active:scale-95"
-        >
-          <PlayIcon className="h-6 w-6" fill="currentColor" />
-          Start playing
-        </button>
-      </section>
-    </main>
+      ))}
+    </div>
   );
 }
 
-function ShapePreview({ round }: { round: ShapeRound }) {
+function SoundWave() {
   return (
-    <svg viewBox="0 0 100 100" className="h-full w-full" aria-label={`Shape to copy: ${round.name}`}>
-      {round.edges.map(([a, b]) => {
-        const pa = round.points[a]!;
-        const pb = round.points[b]!;
-        return (
-          <line
-            key={edgeKey(a, b)}
-            x1={pa.x}
-            y1={pa.y}
-            x2={pb.x}
-            y2={pb.y}
-            stroke="currentColor"
-            strokeWidth={3.5}
-            strokeLinecap="round"
-          />
-        );
-      })}
-    </svg>
+    <div className="flex h-40 items-end gap-2" aria-hidden="true">
+      {[0.5, 0.8, 1, 0.7, 0.9, 0.6, 0.85].map((h, i) => (
+        <span
+          key={i}
+          className="w-4 rounded-full bg-primary/50"
+          style={{
+            height: `${h * 90}px`,
+            animation: `tune-wave 1.6s ease-in-out ${i * 0.12}s infinite`,
+          }}
+        />
+      ))}
+    </div>
   );
 }
 
-function GamePlay() {
-  const [roundIndex, setRoundIndex] = useState(0);
-  const [drawn, setDrawn] = useState<string[]>([]);
-  const [mistakes, setMistakes] = useState(0);
-  const [scores, setScores] = useState<number[]>([]);
-  const [current, setCurrent] = useState<number | null>(null);
-  const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
-  const [finished, setFinished] = useState(false);
-  const [quote, setQuote] = useState<string>(QUOTES[0]!);
-  const [saved, setSaved] = useState(false);
-  const svgRef = useRef<SVGSVGElement | null>(null);
-
-  const round = ROUNDS[roundIndex]!;
-  const complete = drawn.length === round.edges.length;
-
-  const toLocal = useCallback((clientX: number, clientY: number) => {
-    const svg = svgRef.current;
-    if (!svg) return null;
-    const rect = svg.getBoundingClientRect();
-    return {
-      x: ((clientX - rect.left) / rect.width) * 100,
-      y: ((clientY - rect.top) / rect.height) * 100,
-    };
-  }, []);
-
-  const dotAt = useCallback(
-    (pos: { x: number; y: number }) => {
-      let best: number | null = null;
-      let bestDist = 10;
-      for (const point of round.points) {
-        const d = Math.hypot(point.x - pos.x, point.y - pos.y);
-        if (d < bestDist) {
-          bestDist = d;
-          best = point.id;
-        }
-      }
-      return best;
-    },
-    [round],
-  );
-
-  const handleDown = (e: React.PointerEvent<SVGSVGElement>) => {
-    if (complete) return;
-    const pos = toLocal(e.clientX, e.clientY);
-    if (!pos) return;
-    const dot = dotAt(pos);
-    if (dot === null) return;
-    e.currentTarget.setPointerCapture(e.pointerId);
-    setCurrent(dot);
-    setCursor(pos);
-  };
-
-  const handleMove = (e: React.PointerEvent<SVGSVGElement>) => {
-    if (current === null) return;
-    const pos = toLocal(e.clientX, e.clientY);
-    if (!pos) return;
-    setCursor(pos);
-    const dot = dotAt(pos);
-    if (dot === null || dot === current) return;
-
-    const key = edgeKey(current, dot);
-    const isTarget = round.edges.some(([a, b]) => edgeKey(a, b) === key);
-    if (isTarget) {
-      setDrawn((prev) => (prev.includes(key) ? prev : [...prev, key]));
-      setCurrent(dot);
-    } else {
-      setMistakes((m) => m + 1);
-      setCurrent(dot);
-    }
-  };
-
-  const handleUp = () => {
-    setCurrent(null);
-    setCursor(null);
-  };
-
-  useEffect(() => {
-    if (!complete) return;
-    const roundScore = Math.max(5, 20 - mistakes * 2);
-    const timer = window.setTimeout(() => {
-      setScores((prev) => [...prev, roundScore]);
-      if (roundIndex === ROUNDS.length - 1) {
-        setQuote(QUOTES[Math.floor(Math.random() * QUOTES.length)]!);
-        setFinished(true);
-      } else {
-        setRoundIndex((i) => i + 1);
-        setDrawn([]);
-        setMistakes(0);
-      }
-    }, 1100);
-    return () => window.clearTimeout(timer);
-  }, [complete, mistakes, roundIndex]);
-
-  const total = scores.reduce((a, b) => a + b, 0);
-
-  const restart = () => {
-    setRoundIndex(0);
-    setDrawn([]);
-    setMistakes(0);
-    setScores([]);
-    setFinished(false);
-    setSaved(false);
-  };
-
-  const addFavorite = () => {
-    try {
-      const raw = window.localStorage.getItem(FAVORITES_KEY);
-      const list: Favorite[] = raw ? JSON.parse(raw) : [];
-      list.unshift({ date: new Date().toISOString(), score: total, quote });
-      window.localStorage.setItem(FAVORITES_KEY, JSON.stringify(list.slice(0, 20)));
-      setSaved(true);
-    } catch {
-      setSaved(true);
-    }
-  };
-
-  if (finished) {
-    return (
-      <main className="relative flex min-h-screen flex-col items-center justify-center overflow-hidden px-6 py-16">
-        <div className="pointer-events-none absolute inset-0 bg-[image:var(--gradient-warm)]" aria-hidden />
-        <section className="relative flex w-full max-w-md flex-col items-center text-center">
-          <img
-            src={pandaHug}
-            alt="Red panda hugging"
-            width={1024}
-            height={1024}
-            loading="lazy"
-            className="w-48 drop-shadow-sm"
-          />
-          <h1 className="mt-2 text-4xl font-bold text-foreground">All five done!</h1>
-          <p className="mt-4 text-6xl font-bold text-primary">{total}</p>
-          <p className="text-sm text-muted-foreground">points</p>
-          <p className="mt-6 rounded-3xl bg-card/70 px-6 py-5 text-lg leading-relaxed text-foreground shadow-soft">
-            {quote}
-          </p>
-          <div className="mt-8 flex w-full flex-col gap-3">
-            <button
-              onClick={addFavorite}
-              disabled={saved}
-              className="rounded-full bg-accent px-8 py-4 text-lg font-semibold text-accent-foreground transition-transform hover:scale-[1.03] active:scale-95 disabled:opacity-60"
-            >
-              {saved ? "Saved to favourites" : "Add to favourites"}
-            </button>
-            <button
-              onClick={restart}
-              className="rounded-full bg-primary px-8 py-4 text-lg font-semibold text-primary-foreground shadow-soft transition-transform hover:scale-[1.03] active:scale-95"
-            >
-              Play again
-            </button>
-            <Link to="/play" className="py-2 text-base text-muted-foreground underline-offset-4 hover:underline">
-              Back to Games
-            </Link>
-          </div>
-        </section>
-      </main>
-    );
-  }
+function Results({
+  score,
+  quote,
+  rounds,
+  favorites,
+  onToggleFavorite,
+  onPlayAgain,
+}: {
+  score: number;
+  quote: string;
+  rounds: Round[];
+  favorites: TuneId[];
+  onToggleFavorite: (id: TuneId) => void;
+  onPlayAgain: () => void;
+}) {
+  const stars = Math.max(1, Math.round(score / 40));
+  const heard = Array.from(new Set(rounds.map((r) => r.answer.id)));
 
   return (
-    <main className="relative flex min-h-screen flex-col items-center px-5 py-8">
-      <div className="pointer-events-none absolute inset-0 bg-[image:var(--gradient-warm)]" aria-hidden />
+    <section className="flex flex-col items-center gap-7 text-center">
+      <img
+        src={momo}
+        alt="Momo the red panda cheering"
+        width={1024}
+        height={1024}
+        className="h-56 w-56 object-contain drop-shadow-sm"
+      />
 
-      <header className="relative flex w-full max-w-xl items-center justify-between">
-        <Link to="/play" className="text-base text-muted-foreground underline-offset-4 hover:underline">
-          Back to Games
-        </Link>
-        <p className="text-xl font-bold text-foreground">
-          Round {roundIndex + 1} of {ROUNDS.length}
-        </p>
-      </header>
+      <div className="flex items-center gap-2">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <Star
+            key={i}
+            className={`h-10 w-10 ${
+              i < stars ? "text-primary" : "text-border"
+            }`}
+            fill="currentColor"
+          />
+        ))}
+      </div>
 
-      <section className="relative mt-6 flex w-full max-w-xl flex-col items-center">
-        <p className="text-lg text-muted-foreground">Make this shape</p>
-        <div className="mt-3 h-28 w-28 rounded-3xl bg-card/80 p-4 text-accent shadow-soft">
-          <ShapePreview round={round} />
-        </div>
+      <p className="text-6xl font-bold text-primary">{score}</p>
 
-        <p className="mt-6 text-lg text-muted-foreground">Slide from dot to dot</p>
+      <p className="max-w-md text-2xl leading-relaxed text-foreground">
+        {quote}
+      </p>
 
-        <svg
-          ref={svgRef}
-          viewBox="0 0 100 100"
-          role="application"
-          aria-label={`Connect the dots to draw a ${round.name}`}
-          className="mt-3 aspect-square w-full max-w-md touch-none rounded-[2rem] bg-card/80 shadow-soft"
-          onPointerDown={handleDown}
-          onPointerMove={handleMove}
-          onPointerUp={handleUp}
-          onPointerCancel={handleUp}
-        >
-          {drawn.map((key) => {
-            const [a, b] = key.split("-").map(Number);
-            const pa = round.points.find((pt) => pt.id === a)!;
-            const pb = round.points.find((pt) => pt.id === b)!;
+      <div className="w-full rounded-3xl bg-card p-5 shadow-md">
+        <h2 className="mb-4 flex items-center justify-center gap-2 text-2xl font-semibold text-foreground">
+          <Heart className="h-6 w-6 text-primary" fill="currentColor" />
+          Add to favorites
+        </h2>
+        <div className="flex flex-wrap justify-center gap-4">
+          {heard.map((id) => {
+            const tune = TUNE_BY_ID[id];
+            const fav = favorites.includes(id);
             return (
-              <line
-                key={key}
-                x1={pa.x}
-                y1={pa.y}
-                x2={pb.x}
-                y2={pb.y}
-                className="stroke-primary"
-                strokeWidth={3}
-                strokeLinecap="round"
-              />
+              <button
+                key={id}
+                type="button"
+                onClick={() => {
+                  onToggleFavorite(id);
+                  playTune(id);
+                  window.setTimeout(() => stopTune(1), 6000);
+                }}
+                aria-label={`Add ${tune.name} to favorites`}
+                className="relative overflow-hidden rounded-2xl border-4 border-border transition-transform hover:scale-105"
+              >
+                <img
+                  src={tune.image}
+                  alt={tune.name}
+                  width={768}
+                  height={768}
+                  loading="lazy"
+                  className="h-24 w-24 object-cover sm:h-28 sm:w-28"
+                />
+                <span className="absolute right-1 top-1 rounded-full bg-card/90 p-1.5">
+                  <Heart
+                    className={`h-5 w-5 ${fav ? "text-primary" : "text-muted-foreground"}`}
+                    fill={fav ? "currentColor" : "none"}
+                  />
+                </span>
+              </button>
             );
           })}
+        </div>
+      </div>
 
-          {current !== null && cursor && (
-            <line
-              x1={round.points.find((pt) => pt.id === current)!.x}
-              y1={round.points.find((pt) => pt.id === current)!.y}
-              x2={cursor.x}
-              y2={cursor.y}
-              className="stroke-accent"
-              strokeWidth={2.5}
-              strokeLinecap="round"
-            />
-          )}
-
-          {round.points.map((pt) => (
-            <circle
-              key={pt.id}
-              cx={pt.x}
-              cy={pt.y}
-              r={current === pt.id ? 4.6 : 3.4}
-              className={current === pt.id ? "fill-primary" : "fill-foreground/70"}
-            />
-          ))}
-        </svg>
-
-        {complete && (
-          <p className="mt-5 text-2xl font-bold text-primary">Lovely work!</p>
-        )}
-      </section>
-    </main>
+      <button
+        type="button"
+        onClick={onPlayAgain}
+        className="flex items-center gap-3 rounded-full bg-primary px-10 py-5 text-2xl font-semibold text-primary-foreground shadow-lg transition-transform hover:scale-105 active:scale-95"
+      >
+        <RotateCcw className="h-7 w-7" />
+        Play again
+      </button>
+    </section>
   );
-}
-
-function Play4Container() {
-  const [isPlaying, setIsPlaying] = useState(false);
-
-  if (!isPlaying) {
-    return <Intro onStart={() => setIsPlaying(true)} />;
-  }
-
-  return <GamePlay />;
 }

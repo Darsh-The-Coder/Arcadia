@@ -2,8 +2,8 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Gamepad2, ArrowLeft, ArrowRight } from "lucide-react";
 
 const GAME_OPTIONS = [
-  { title: "Flip The Cards", blurb: "Match pairs of traditional cultural artifacts", route: "/play3" },
-  { title: "Tune With Me", blurb: "Explore nature sounds and traditional melodies", route: "/play2" },
+  { title: "Flip The Cards", blurb: "Match pairs of traditional cultural dances", route: "/play3" },
+  { title: "Tune With Me", blurb: "Explore nature sounds", route: "/play2" },
   { title: "Connect The Dots", blurb: "Make shapes by completing the dots!", route: "/play4" },
   { title: "MarketPlace", blurb: "Remember it!", route: "/play5" },
   { title: "Let's Explore!", blurb: "Remember the hiding spot!", route: "/play6" },

@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import momo from "@/assets/momoexplore.png";
 import pen from "@/assets/pen.png";
-import MomoPanda from "@/assets/momo-panda.png";
+import MomoPanda from "@/assets/momoexplore.png";
 import { LEVELS, PREVIEW_SECONDS, QUOTES, ROOMS, TOTAL_ROUNDS, shuffle, type Room } from "./rooms";
 import { ArrowLeft, Play as PlayIcon } from "lucide-react";
 

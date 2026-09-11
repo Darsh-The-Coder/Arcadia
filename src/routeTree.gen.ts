@@ -14,9 +14,11 @@ import { Route as ActivitiesRouteImport } from './routes/activities'
 import { Route as ChatbotRouteImport } from './routes/chatbot'
 import { Route as FamilyRouteImport } from './routes/family'
 import { Route as FavouritesRouteImport } from './routes/favourites'
+import { Route as Favourites1RouteImport } from './routes/favourites1'
 import { Route as FestivalFavouritesRouteImport } from './routes/festival-favourites'
 import { Route as FlipRouteImport } from './routes/flip'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
+import { Route as Marketplace2RouteImport } from './routes/marketplace2'
 import { Route as MemoryRouteImport } from './routes/memory'
 import { Route as MyDayRouteImport } from './routes/my-day'
 import { Route as PlayRouteImport } from './routes/play'
@@ -55,6 +57,11 @@ const FavouritesRoute = FavouritesRouteImport.update({
   path: '/favourites',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Favourites1Route = Favourites1RouteImport.update({
+  id: '/favourites1',
+  path: '/favourites1',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FestivalFavouritesRoute = FestivalFavouritesRouteImport.update({
   id: '/festival-favourites',
   path: '/festival-favourites',
@@ -68,6 +75,11 @@ const FlipRoute = FlipRouteImport.update({
 const MarketplaceRoute = MarketplaceRouteImport.update({
   id: '/marketplace',
   path: '/marketplace',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Marketplace2Route = Marketplace2RouteImport.update({
+  id: '/marketplace2',
+  path: '/marketplace2',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MemoryRoute = MemoryRouteImport.update({
@@ -137,9 +149,11 @@ export interface FileRoutesByFullPath {
   '/chatbot': typeof ChatbotRoute
   '/family': typeof FamilyRoute
   '/favourites': typeof FavouritesRoute
+  '/favourites1': typeof Favourites1Route
   '/festival-favourites': typeof FestivalFavouritesRoute
   '/flip': typeof FlipRoute
   '/marketplace': typeof MarketplaceRoute
+  '/marketplace2': typeof Marketplace2Route
   '/memory': typeof MemoryRoute
   '/my-day': typeof MyDayRoute
   '/play': typeof PlayRoute
@@ -159,9 +173,11 @@ export interface FileRoutesByTo {
   '/chatbot': typeof ChatbotRoute
   '/family': typeof FamilyRoute
   '/favourites': typeof FavouritesRoute
+  '/favourites1': typeof Favourites1Route
   '/festival-favourites': typeof FestivalFavouritesRoute
   '/flip': typeof FlipRoute
   '/marketplace': typeof MarketplaceRoute
+  '/marketplace2': typeof Marketplace2Route
   '/memory': typeof MemoryRoute
   '/my-day': typeof MyDayRoute
   '/play': typeof PlayRoute
@@ -182,9 +198,11 @@ export interface FileRoutesById {
   '/chatbot': typeof ChatbotRoute
   '/family': typeof FamilyRoute
   '/favourites': typeof FavouritesRoute
+  '/favourites1': typeof Favourites1Route
   '/festival-favourites': typeof FestivalFavouritesRoute
   '/flip': typeof FlipRoute
   '/marketplace': typeof MarketplaceRoute
+  '/marketplace2': typeof Marketplace2Route
   '/memory': typeof MemoryRoute
   '/my-day': typeof MyDayRoute
   '/play': typeof PlayRoute
@@ -206,9 +224,11 @@ export interface FileRouteTypes {
     | '/chatbot'
     | '/family'
     | '/favourites'
+    | '/favourites1'
     | '/festival-favourites'
     | '/flip'
     | '/marketplace'
+    | '/marketplace2'
     | '/memory'
     | '/my-day'
     | '/play'
@@ -228,9 +248,11 @@ export interface FileRouteTypes {
     | '/chatbot'
     | '/family'
     | '/favourites'
+    | '/favourites1'
     | '/festival-favourites'
     | '/flip'
     | '/marketplace'
+    | '/marketplace2'
     | '/memory'
     | '/my-day'
     | '/play'
@@ -250,9 +272,11 @@ export interface FileRouteTypes {
     | '/chatbot'
     | '/family'
     | '/favourites'
+    | '/favourites1'
     | '/festival-favourites'
     | '/flip'
     | '/marketplace'
+    | '/marketplace2'
     | '/memory'
     | '/my-day'
     | '/play'
@@ -273,9 +297,11 @@ export interface RootRouteChildren {
   ChatbotRoute: typeof ChatbotRoute
   FamilyRoute: typeof FamilyRoute
   FavouritesRoute: typeof FavouritesRoute
+  Favourites1Route: typeof Favourites1Route
   FestivalFavouritesRoute: typeof FestivalFavouritesRoute
   FlipRoute: typeof FlipRoute
   MarketplaceRoute: typeof MarketplaceRoute
+  Marketplace2Route: typeof Marketplace2Route
   MemoryRoute: typeof MemoryRoute
   MyDayRoute: typeof MyDayRoute
   PlayRoute: typeof PlayRoute
@@ -327,6 +353,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FavouritesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/favourites1': {
+      id: '/favourites1'
+      path: '/favourites1'
+      fullPath: '/favourites1'
+      preLoaderRoute: typeof Favourites1RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/festival-favourites': {
       id: '/festival-favourites'
       path: '/festival-favourites'
@@ -346,6 +379,13 @@ declare module '@tanstack/react-router' {
       path: '/marketplace'
       fullPath: '/marketplace'
       preLoaderRoute: typeof MarketplaceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/marketplace2': {
+      id: '/marketplace2'
+      path: '/marketplace2'
+      fullPath: '/marketplace2'
+      preLoaderRoute: typeof Marketplace2RouteImport
       parentRoute: typeof rootRouteImport
     }
     '/memory': {
@@ -441,9 +481,11 @@ const rootRouteChildren: RootRouteChildren = {
   ChatbotRoute: ChatbotRoute,
   FamilyRoute: FamilyRoute,
   FavouritesRoute: FavouritesRoute,
+  Favourites1Route: Favourites1Route,
   FestivalFavouritesRoute: FestivalFavouritesRoute,
   FlipRoute: FlipRoute,
   MarketplaceRoute: MarketplaceRoute,
+  Marketplace2Route: Marketplace2Route,
   MemoryRoute: MemoryRoute,
   MyDayRoute: MyDayRoute,
   PlayRoute: PlayRoute,

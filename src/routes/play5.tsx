@@ -7,13 +7,13 @@ import { ArrowLeft, Play as PlayIcon } from "lucide-react";
 export const Route = createFileRoute("/play5")({
   head: () => ({
     meta: [
-      { title: "Play Bamboo Rhythm — Market Place Dishes" },
+      { title: "Play Market Place Dishes" },
       {
         name: "description",
         content:
           "Five rounds of Northeast Indian dishes: watch them, then pick the ones you saw as the levels grow.",
       },
-      { property: "og:title", content: "Play Bamboo Rhythm" },
+      { property: "og:title", content: "Play Market Place Dishes" },
       {
         property: "og:description",
         content: "Watch the dishes, then pick the right ones across five growing rounds.",
@@ -65,7 +65,7 @@ function Intro({ onStart }: { onStart: () => void }) {
           className="h-64 w-64 object-contain drop-shadow-sm sm:h-80 sm:w-80"
         />
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Bamboo Rhythm
+          Market Place
         </h1>
         <p className="text-lg text-muted-foreground">
           Take it slow. Watch the dishes, then pick the right ones across five growing rounds.

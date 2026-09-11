@@ -7,13 +7,13 @@ import { ArrowLeft, Play as PlayIcon, Sparkles } from "lucide-react";
 export const Route = createFileRoute("/play4")({
   head: () => ({
     meta: [
-      { title: "Play Festival Puzzle — Gentle Shape Game" },
+      { title: "Play Connect The Dots - Shape Game" },
       {
         name: "description",
         content:
           "Slide from dot to dot to copy each shape. Five calm rounds designed for memory care, with points and a kind word at the end.",
       },
-      { property: "og:title", content: "Play Festival Puzzle — Gentle Shape Game" },
+      { property: "og:title", content: "Play Connect The Dots - Shape Game" },
       {
         property: "og:description",
         content:
@@ -51,7 +51,7 @@ function Intro({ onStart }: { onStart: () => void }) {
           className="h-64 w-64 object-contain drop-shadow-sm sm:h-80 sm:w-80"
         />
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
-          Festival Puzzle
+          Connect The Dots
         </h1>
         <p className="text-lg text-muted-foreground">
           Take it slow. Slide from dot to dot to copy each shape across five calm rounds.
