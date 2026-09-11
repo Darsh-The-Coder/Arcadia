@@ -37,14 +37,14 @@ const PATIENT_TILES: { title: string; blurb: string; icon: typeof Users; tone: s
     blurb: "See your loved ones",
     icon: Users,
     tone: "bg-sun/75 text-sun-foreground",
-    to: "/family",
+    to: "/memory",
   },
   {
     title: "Talk to me",
     blurb: "Let's have a conversation",
     icon: MessageCircle,
     tone: "bg-sage/80 text-sage-foreground",
-    to: "/talk",
+    to: "/chatbot",
   },
   {
     title: "My Day",
