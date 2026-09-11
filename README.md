@@ -1,5 +1,5 @@
 # APP NAME : SmritiSetu
-**# TEAM NAME : Arcadia**
+# TEAM NAME : Arcadia
 
 ## Overview
 
@@ -18,30 +18,9 @@ SmritiSetu is a compassionate digital platform incorporating AI-based cognitive 
 
 Ensure you have a package manager installed (such as `npm`, `pnpm`, or `yarn`).
 
-### Installation
+## 🛠️ Local Setup Instructions
 
-1. Clone the repository:
-```bash
-git clone <repository-url>
-
-```
-2. Install dependencies:
-```bash
-npm install
-
-```
-
-### Running the Development Server
-
-Start the local development server:
-
-```bash
-npm run dev
-
-```
-
-## Project Structure
-
-* `src/components/` - Reusable UI components, headers, and visual layouts.
-* `src/pages/` / `src/routes/` - Screen views for the application modules (Family, Activities, Memory, Games, etc.).
-* `src/state/` - Context providers and state management handling care data and device synchronization.
+1. Clone the repository.
+2. Copy the example env file: `cp .env.example .env`
+3. Open the new `.env` file and add your own API keys.
+4. Run `npm install` and `npm start`.
