@@ -18,7 +18,7 @@ import {
 import { Mascot } from "@/components/Mascot";
 import { cn } from "@/lib/utils";
 import type { UserRole } from "@/lib/role";
-import logo from "@/assets/ssetu.jpeg";
+import logo from "@/assets/ssetu.png";
 
 type Dest =
   | "/family"
@@ -166,9 +166,9 @@ export function HomeScreen({ name, role }: { name: string; role: UserRole; onRes
       });
 
       timers.current.push(
-        window.setTimeout(() => setReach((f) => (f ? { ...f, phase: "tap" } : f)), 470),
-        window.setTimeout(() => setReach((f) => (f ? { ...f, phase: "splash" } : f)), 760),
-        window.setTimeout(() => void navigate({ to: to as never }), 1860),
+        window.setTimeout(() => setReach((f) => (f ? { ...f, phase: "tap" } : f)), 20),
+        window.setTimeout(() => setReach((f) => (f ? { ...f, phase: "splash" } : f)), 220),
+        window.setTimeout(() => void navigate({ to: to as never }), 1000),
       );
     },
     [reach, navigate],
@@ -351,7 +351,7 @@ export function HomeScreen({ name, role }: { name: string; role: UserRole; onRes
                 background: color,
                 filter: "blur(1px)",
                 transform: "scale(0)",
-                animation: `splash-pop ${700 + i * 150}ms cubic-bezier(0.22, 1, 0.36, 1) ${i * 70}ms both`,
+                animation: `splash-pop ${1100 + i * 180}ms cubic-bezier(0.22, 1, 0.36, 1) ${i * 90}ms both`,
               }}
             />
           ))}
@@ -363,7 +363,7 @@ export function HomeScreen({ name, role }: { name: string; role: UserRole; onRes
               width: reach.cover,
               height: reach.cover,
               transform: "scale(0)",
-              animation: "splash-cover 700ms cubic-bezier(0.5, 0, 0.3, 1) 520ms both",
+              animation: "splash-cover 1100ms cubic-bezier(0.5, 0, 0.3, 1) 220ms both",
             }}
           />
         </div>

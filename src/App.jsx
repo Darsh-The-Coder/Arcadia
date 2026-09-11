@@ -49,7 +49,6 @@ function GamesHub({ onStartGame }) {
   return <Page title="Let's Play" subtitle="Play offline now, or invite a friend."><div className="game-grid">{Object.entries(GAME_INFO).map(([id, game]) => <article className="game-card" key={id} style={{ "--game-color": game.color }}><div className="game-icon">{game.icon}</div><h3>{game.title}</h3><p>{game.detail}</p><div className="game-actions"><button onClick={() => onStartGame(id, "offline")}>Play Offline</button><button className="secondary" onClick={() => routeTo("play-with-friends")}>Play with Friend</button></div></article>)}</div><Mascot mood="bounce" message="You can play these three games offline too." /></Page>;
 }
 
-<<<<<<< HEAD
 function Home() {
   return (
     <main className="home-content">
@@ -128,7 +127,6 @@ function Home() {
       </section>
     </main>
   );
-=======
 function PlayWithFriends({ online, cloudUser, backendStatus, messages, setMessages, onStartGame }) {
   const [tab, setTab] = useState("friends");
   const [friends, setFriends] = useState(firebaseConfigured ? [] : DEMO_FRIENDS);
@@ -170,7 +168,6 @@ function PlayWithFriends({ online, cloudUser, backendStatus, messages, setMessag
 }
 function MultiplayerPanel({ friends, friend, setFriend, onInvite }) {
   return <div className="multiplayer-panel">{friend ? <><div className="play-with"><span>Choose a friend to invite</span><select value={friend.id} onChange={(e) => setFriend(friends.find((item) => item.id === e.target.value))}>{friends.map((item) => <option key={item.id} value={item.id}>{item.name}</option>)}</select></div><div className="game-grid compact">{Object.entries(GAME_INFO).map(([id, game]) => <button key={id} className="multiplayer-card" style={{ "--game-color": game.color }} onClick={() => onInvite(id)}><span>{game.icon}</span><strong>{game.title}</strong><small>{game.detail}</small><b>Invite {friend.name} →</b></button>)}</div></> : <div className="solo-note"><strong>Add a friend before starting multiplayer.</strong><p>Use Friends & Chat to exchange invite codes. Once accepted, either friend can send a game invitation.</p><button onClick={() => routeTo("games")}>Play solo instead</button></div>}</div>;
->>>>>>> origin/feature/play-with-friends
 }
 
 function GameRoom({ gameId, mode, friend, roomId, cloudUser, onExit }) {

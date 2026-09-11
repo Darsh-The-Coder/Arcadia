@@ -2,11 +2,11 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Gamepad2, ArrowLeft, ArrowRight } from "lucide-react";
 
 const GAME_OPTIONS = [
-  { id: "g-2.1", title: "Memory Match", blurb: "Match pairs of traditional cultural artifacts", route: "/play3" },
-  { id: "g-2.2", title: "Tune With Me", blurb: "Explore nature sounds and traditional melodies", route: "/play2" },
-  { id: "g-2.3", title: "Festival Puzzle", blurb: "Assemble vibrant cultural celebration scenes", route: "" },
-  { id: "g-2.4", title: "Handloom Weaving", blurb: "Create symmetrical geometric patterns", route: "" },
-  { id: "g-2.5", title: "Bamboo Rhythm", blurb: "Follow the acoustic beat patterns", route: "" },
+  { title: "Flip The Cards", blurb: "Match pairs of traditional cultural artifacts", route: "/play3" },
+  { title: "Tune With Me", blurb: "Explore nature sounds and traditional melodies", route: "/play2" },
+  { title: "Connect The Dots", blurb: "Make shapes by completing the dots!", route: "/play4" },
+  { title: "MarketPlace", blurb: "Remember it!", route: "/play5" },
+  { title: "Let's Explore!", blurb: "Remember the hiding spot!", route: "/play6" },
 ];
 
 function GamesMenuPage() {
@@ -22,9 +22,9 @@ function GamesMenuPage() {
       </header>
 
       <div className="grid gap-4">
-        {GAME_OPTIONS.map((game) => (
+        {GAME_OPTIONS.map((game, index) => (
           <button
-            key={game.id}
+            key={game.title}
             type="button"
             onClick={() => {
               if (game.route) {
@@ -40,7 +40,7 @@ function GamesMenuPage() {
             </span>
             <span className="flex-1">
               <span className="flex items-center gap-2">
-                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{game.id}</span>
+                <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{index + 1}</span>
                 <span className="text-xl font-bold tracking-tight">{game.title}</span>
               </span>
               <span className="block text-sm text-muted-foreground mt-1">{game.blurb}</span>

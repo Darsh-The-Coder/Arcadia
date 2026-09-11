@@ -3,6 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { DISHES, ROUNDS, QUOTES, shuffle, type Dish } from "@/data/dishes";
 import { DishCard } from "@/components/DishCard";
 import { addFavourites, getFavourites, toggleFavourite } from "@/lib/favourites";
+import MomoPanda from "@/assets/momo-panda.png";
+import { ArrowLeft, Play as PlayIcon } from "lucide-react";
 
 export const Route = createFileRoute("/play3")({
   head: () => ({
@@ -20,10 +22,51 @@ export const Route = createFileRoute("/play3")({
       },
     ],
   }),
-  component: Play,
+  component: Play3Container,
 });
 
 type Phase = "show" | "choose" | "round-done" | "finished";
+
+function Intro({ onStart }: { onStart: () => void }) {
+  return (
+    <main className="relative flex min-h-screen flex-col items-center justify-center px-5 py-8">
+      <div className="pointer-events-none absolute inset-0 bg-[image:var(--gradient-warm)]" aria-hidden />
+
+      <header className="absolute top-8 left-5">
+        <Link
+          to="/play"
+          className="flex items-center gap-2 text-base font-medium text-muted-foreground underline-offset-4 hover:underline"
+        >
+          <ArrowLeft className="size-4" /> Back to Games
+        </Link>
+      </header>
+
+      <section className="relative flex flex-col items-center gap-6 text-center max-w-md">
+        <img
+          src={MomoPanda}
+          alt="Momo the red panda"
+          width={1024}
+          height={1024}
+          className="h-64 w-64 object-contain drop-shadow-sm sm:h-80 sm:w-80"
+        />
+        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-5xl">
+          Memory Match
+        </h1>
+        <p className="text-lg text-muted-foreground">
+          Take it slow. Look at a Northeast Indian dish, then find it again in the market stall.
+        </p>
+        <button
+          type="button"
+          onClick={onStart}
+          className="flex items-center gap-3 rounded-full bg-primary px-10 py-5 text-xl font-semibold text-primary-foreground shadow-lg transition-transform hover:scale-105 active:scale-95"
+        >
+          <PlayIcon className="h-6 w-6" fill="currentColor" />
+          Start playing
+        </button>
+      </section>
+    </main>
+  );
+}
 
 function buildRound(index: number) {
   const cfg = ROUNDS[index]!;
@@ -33,7 +76,7 @@ function buildRound(index: number) {
   return { cfg, targets, options: shuffle([...targets, ...distractors]) };
 }
 
-function Play() {
+function PlayGame() {
   const [roundIndex, setRoundIndex] = useState(0);
   const [round, setRound] = useState<ReturnType<typeof buildRound> | null>(null);
   const [phase, setPhase] = useState<Phase>("show");
@@ -99,8 +142,8 @@ function Play() {
   return (
     <main className="mx-auto min-h-screen w-full max-w-4xl px-5 py-8">
       <header className="flex items-center justify-between">
-        <Link to="/" className="text-base font-semibold text-muted-foreground underline">
-          Home
+        <Link to="/play" className="text-base font-semibold text-muted-foreground underline">
+          Back to Games
         </Link>
         <div className="flex gap-1.5">
           {ROUNDS.map((_, i) => (
@@ -251,4 +294,14 @@ function Play() {
       )}
     </main>
   );
+}
+
+function Play3Container() {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  if (!isPlaying) {
+    return <Intro onStart={() => setIsPlaying(true)} />;
+  }
+
+  return <PlayGame />;
 }

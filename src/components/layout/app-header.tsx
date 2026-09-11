@@ -14,7 +14,9 @@ export function AppHeader() {
   return (
     <header className="flex min-h-[76px] items-center justify-between border-b border-[hsl(var(--border))] px-5 py-4 sm:px-8 lg:px-12">
       <div className="flex items-center gap-3">
-        <Logo className="h-14 w-14 shrink-0 sm:h-16 sm:w-16" />
+        <div className="h-12 w-12 shrink-0 overflow-hidden rounded-full sm:h-14 sm:w-14">
+          <Logo className="h-auto w-full object-cover object-top scale-125" />
+        </div>
         <div className="min-w-0">
           <p className="truncate font-serif text-xl leading-tight text-[hsl(var(--foreground))] sm:text-2xl">
             SmritiSetu

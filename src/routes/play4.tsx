@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ROUNDS, QUOTES, edgeKey, type ShapeRound } from "../lib/shapes";
-import pandaHug from "@/assets/momo.png";
+import pandaHug from "@/assets/panda-hug.png";
 import { ArrowLeft, Play as PlayIcon, Sparkles } from "lucide-react";
 
-export const Route = createFileRoute("/play2")({
+export const Route = createFileRoute("/play4")({
   head: () => ({
     meta: [
       { title: "Play Festival Puzzle — Gentle Shape Game" },

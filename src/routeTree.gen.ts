@@ -22,6 +22,9 @@ import { Route as MyDayRouteImport } from './routes/my-day'
 import { Route as PlayRouteImport } from './routes/play'
 import { Route as Play2RouteImport } from './routes/play2'
 import { Route as Play3RouteImport } from './routes/play3'
+import { Route as Play4RouteImport } from './routes/play4'
+import { Route as Play5RouteImport } from './routes/play5'
+import { Route as Play6RouteImport } from './routes/play6'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as SosRouteImport } from './routes/sos'
 import { Route as TalkRouteImport } from './routes/talk'
@@ -92,6 +95,21 @@ const Play3Route = Play3RouteImport.update({
   path: '/play3',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Play4Route = Play4RouteImport.update({
+  id: '/play4',
+  path: '/play4',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Play5Route = Play5RouteImport.update({
+  id: '/play5',
+  path: '/play5',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const Play6Route = Play6RouteImport.update({
+  id: '/play6',
+  path: '/play6',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SettingsRoute = SettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -127,6 +145,9 @@ export interface FileRoutesByFullPath {
   '/play': typeof PlayRoute
   '/play2': typeof Play2Route
   '/play3': typeof Play3Route
+  '/play4': typeof Play4Route
+  '/play5': typeof Play5Route
+  '/play6': typeof Play6Route
   '/settings': typeof SettingsRoute
   '/sos': typeof SosRoute
   '/talk': typeof TalkRoute
@@ -146,6 +167,9 @@ export interface FileRoutesByTo {
   '/play': typeof PlayRoute
   '/play2': typeof Play2Route
   '/play3': typeof Play3Route
+  '/play4': typeof Play4Route
+  '/play5': typeof Play5Route
+  '/play6': typeof Play6Route
   '/settings': typeof SettingsRoute
   '/sos': typeof SosRoute
   '/talk': typeof TalkRoute
@@ -166,6 +190,9 @@ export interface FileRoutesById {
   '/play': typeof PlayRoute
   '/play2': typeof Play2Route
   '/play3': typeof Play3Route
+  '/play4': typeof Play4Route
+  '/play5': typeof Play5Route
+  '/play6': typeof Play6Route
   '/settings': typeof SettingsRoute
   '/sos': typeof SosRoute
   '/talk': typeof TalkRoute
@@ -187,6 +214,9 @@ export interface FileRouteTypes {
     | '/play'
     | '/play2'
     | '/play3'
+    | '/play4'
+    | '/play5'
+    | '/play6'
     | '/settings'
     | '/sos'
     | '/talk'
@@ -206,6 +236,9 @@ export interface FileRouteTypes {
     | '/play'
     | '/play2'
     | '/play3'
+    | '/play4'
+    | '/play5'
+    | '/play6'
     | '/settings'
     | '/sos'
     | '/talk'
@@ -225,6 +258,9 @@ export interface FileRouteTypes {
     | '/play'
     | '/play2'
     | '/play3'
+    | '/play4'
+    | '/play5'
+    | '/play6'
     | '/settings'
     | '/sos'
     | '/talk'
@@ -245,6 +281,9 @@ export interface RootRouteChildren {
   PlayRoute: typeof PlayRoute
   Play2Route: typeof Play2Route
   Play3Route: typeof Play3Route
+  Play4Route: typeof Play4Route
+  Play5Route: typeof Play5Route
+  Play6Route: typeof Play6Route
   SettingsRoute: typeof SettingsRoute
   SosRoute: typeof SosRoute
   TalkRoute: typeof TalkRoute
@@ -344,6 +383,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof Play3RouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/play4': {
+      id: '/play4'
+      path: '/play4'
+      fullPath: '/play4'
+      preLoaderRoute: typeof Play4RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play5': {
+      id: '/play5'
+      path: '/play5'
+      fullPath: '/play5'
+      preLoaderRoute: typeof Play5RouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/play6': {
+      id: '/play6'
+      path: '/play6'
+      fullPath: '/play6'
+      preLoaderRoute: typeof Play6RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/settings': {
       id: '/settings'
       path: '/settings'
@@ -389,6 +449,9 @@ const rootRouteChildren: RootRouteChildren = {
   PlayRoute: PlayRoute,
   Play2Route: Play2Route,
   Play3Route: Play3Route,
+  Play4Route: Play4Route,
+  Play5Route: Play5Route,
+  Play6Route: Play6Route,
   SettingsRoute: SettingsRoute,
   SosRoute: SosRoute,
   TalkRoute: TalkRoute,
