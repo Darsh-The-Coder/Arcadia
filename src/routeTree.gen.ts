@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ActivitiesRouteImport } from './routes/activities'
+import { Route as CaregiverRouteImport } from './routes/caregiver'
 import { Route as ChatbotRouteImport } from './routes/chatbot'
 import { Route as FamilyRouteImport } from './routes/family'
 import { Route as FavouritesRouteImport } from './routes/favourites'
@@ -43,6 +44,11 @@ const IndexRoute = IndexRouteImport.update({
 const ActivitiesRoute = ActivitiesRouteImport.update({
   id: '/activities',
   path: '/activities',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CaregiverRoute = CaregiverRouteImport.update({
+  id: '/caregiver',
+  path: '/caregiver',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatbotRoute = ChatbotRouteImport.update({
@@ -164,6 +170,7 @@ const G22Route = G22RouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/activities': typeof ActivitiesRoute
+  '/caregiver': typeof CaregiverRoute
   '/chatbot': typeof ChatbotRoute
   '/family': typeof FamilyRoute
   '/favourites': typeof FavouritesRoute
@@ -191,6 +198,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/activities': typeof ActivitiesRoute
+  '/caregiver': typeof CaregiverRoute
   '/chatbot': typeof ChatbotRoute
   '/family': typeof FamilyRoute
   '/favourites': typeof FavouritesRoute
@@ -219,6 +227,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/activities': typeof ActivitiesRoute
+  '/caregiver': typeof CaregiverRoute
   '/chatbot': typeof ChatbotRoute
   '/family': typeof FamilyRoute
   '/favourites': typeof FavouritesRoute
@@ -248,6 +257,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/activities'
+    | '/caregiver'
     | '/chatbot'
     | '/family'
     | '/favourites'
@@ -275,6 +285,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/activities'
+    | '/caregiver'
     | '/chatbot'
     | '/family'
     | '/favourites'
@@ -302,6 +313,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/activities'
+    | '/caregiver'
     | '/chatbot'
     | '/family'
     | '/favourites'
@@ -330,6 +342,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   ActivitiesRoute: typeof ActivitiesRoute
+  CaregiverRoute: typeof CaregiverRoute
   ChatbotRoute: typeof ChatbotRoute
   FamilyRoute: typeof FamilyRoute
   FavouritesRoute: typeof FavouritesRoute
@@ -369,6 +382,13 @@ declare module '@tanstack/react-router' {
       path: '/activities'
       fullPath: '/activities'
       preLoaderRoute: typeof ActivitiesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/caregiver': {
+      id: '/caregiver'
+      path: '/caregiver'
+      fullPath: '/caregiver'
+      preLoaderRoute: typeof CaregiverRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/chatbot': {
@@ -538,6 +558,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   ActivitiesRoute: ActivitiesRoute,
+  CaregiverRoute: CaregiverRoute,
   ChatbotRoute: ChatbotRoute,
   FamilyRoute: FamilyRoute,
   FavouritesRoute: FavouritesRoute,

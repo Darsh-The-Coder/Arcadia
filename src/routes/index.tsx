@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Navigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { HomeScreen } from "@/components/HomeScreen";
 import { RoleOnboarding } from "@/components/RoleOnboarding";
@@ -51,6 +51,8 @@ function Index() {
       />
     );
   }
+
+  if (role === 'caregiver') return <Navigate to="/caregiver" search={{ view: '/' }} />;
 
   return (
     <HomeScreen

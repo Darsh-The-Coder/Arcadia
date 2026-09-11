@@ -1,0 +1,4 @@
+{
+  "extends": "./tsconfig.json",
+  "include": ["src/features/caregiver/**/*.ts", "src/features/caregiver/**/*.tsx", "src/routes/caregiver.tsx", "src/routeTree.gen.ts", "src/SosPage.d.ts"]
+}

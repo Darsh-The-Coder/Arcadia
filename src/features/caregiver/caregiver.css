@@ -1,0 +1,27 @@
+/* Priya's layout effects, scoped to the caregiver portal. Arcadia owns colours. */
+.caregiver-portal {
+  min-height: 100dvh;
+  color: var(--foreground);
+  background: var(--background);
+  --button-outline: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --badge-outline: color-mix(in srgb, var(--foreground) 5%, transparent);
+  --elevate-1: color-mix(in srgb, var(--foreground) 3%, transparent);
+  --elevate-2: color-mix(in srgb, var(--foreground) 8%, transparent);
+}
+.caregiver-portal .app-shell { background: var(--background); }
+.caregiver-portal .panel-shadow { box-shadow: 0 16px 40px #233d500f, 0 2px 8px #233d500c; }
+.caregiver-portal .modal-shadow { box-shadow: 0 24px 70px #233d5038; }
+.caregiver-portal .dashboard-enter { animation: caregiver-rise 480ms cubic-bezier(.22,.8,.28,1) both; }
+.caregiver-portal .dashboard-delay-1 { animation-delay: 70ms; }
+.caregiver-portal .dashboard-delay-2 { animation-delay: 140ms; }
+.caregiver-portal .dashboard-delay-3 { animation-delay: 210ms; }
+.caregiver-portal .dashboard-delay-4 { animation-delay: 280ms; }
+.caregiver-portal .dashboard-delay-5 { animation-delay: 350ms; }
+.caregiver-portal .safe-pulse { animation: caregiver-pulse 2.6s ease-in-out infinite; }
+.caregiver-portal .hover-elevate:hover { background-image: linear-gradient(var(--elevate-1), var(--elevate-1)); }
+.caregiver-portal .active-elevate:active { background-image: linear-gradient(var(--elevate-2), var(--elevate-2)); }
+@keyframes caregiver-rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes caregiver-pulse { 0%, 100% { opacity: .75; transform: scale(1); } 50% { opacity: 1; transform: scale(1.08); } }
+@media (prefers-reduced-motion: reduce) {
+  .caregiver-portal *, .caregiver-portal *::before, .caregiver-portal *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
