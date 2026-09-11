@@ -31,3 +31,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local integration checks
+.test-runtime/
+friends-menu-check.png
+firebase-debug.log
+firestore-debug.log
+ui-debug.log

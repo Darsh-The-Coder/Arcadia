@@ -4,6 +4,61 @@ service cloud.firestore {
     function signedIn() { return request.auth != null; }
     function isMember(members) { return signedIn() && request.auth.uid in members; }
 
+    // Friends integration uses separate collections so existing app data is unchanged.
+    match /socialProfiles/{uid} {
+      allow read: if signedIn();
+      allow create, update: if signedIn() && request.auth.uid == uid
+        && request.resource.data.keys().hasOnly(['name', 'code'])
+        && request.resource.data.name is string && request.resource.data.name.size() <= 40
+        && request.resource.data.code is string && request.resource.data.code.matches('[-_A-Z0-9]{10}');
+    }
+    match /socialLinks/{linkId} {
+      allow read: if signedIn() && (!exists(/databases/$(database)/documents/socialLinks/$(linkId)) || isMember(resource.data.members));
+      allow create: if isMember(request.resource.data.members)
+        && request.resource.data.keys().hasOnly(['members', 'invitedBy', 'status', 'createdAt'])
+        && request.resource.data.members.size() == 2
+        && request.resource.data.members[0] != request.resource.data.members[1]
+        && request.resource.data.members[0] < request.resource.data.members[1]
+        && linkId == request.resource.data.members[0] + '_' + request.resource.data.members[1]
+        && request.resource.data.invitedBy == request.auth.uid
+        && request.resource.data.status == 'pending';
+      allow update: if isMember(resource.data.members)
+        && resource.data.invitedBy != request.auth.uid && resource.data.status == 'pending'
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        && request.resource.data.status in ['accepted', 'declined'];
+      match /messages/{messageId} {
+        function accepted() {
+          let link = get(/databases/$(database)/documents/socialLinks/$(linkId)).data;
+          return isMember(link.members) && link.status == 'accepted';
+        }
+        allow read: if accepted();
+        allow create: if accepted()
+          && request.resource.data.keys().hasOnly(['senderId', 'text', 'createdAt', 'roomId'])
+          && request.resource.data.senderId == request.auth.uid
+          && request.resource.data.text is string && request.resource.data.text.size() > 0
+          && request.resource.data.text.size() <= 2000
+          && (!('roomId' in request.resource.data) ||
+            getAfter(/databases/$(database)/documents/socialRooms/$(request.resource.data.roomId)).data.linkId == linkId);
+      }
+    }
+    match /socialRooms/{roomId} {
+      allow read: if isMember(resource.data.members);
+      allow create: if isMember(request.resource.data.members)
+        && request.resource.data.keys().hasOnly(['gameId', 'members', 'linkId', 'createdBy', 'createdAt'])
+        && request.resource.data.createdBy == request.auth.uid
+        && request.resource.data.gameId in ['festivals', 'tunes', 'dots', 'market', 'explore', 'memory', 'puzzle', 'restore']
+        && get(/databases/$(database)/documents/socialLinks/$(request.resource.data.linkId)).data.status == 'accepted'
+        && request.resource.data.members == get(/databases/$(database)/documents/socialLinks/$(request.resource.data.linkId)).data.members;
+      match /progress/{uid} {
+        function roomMember() { return isMember(get(/databases/$(database)/documents/socialRooms/$(roomId)).data.members); }
+        allow read: if roomMember();
+        allow create, update: if roomMember() && request.auth.uid == uid
+          && request.resource.data.keys().hasOnly(['state', 'summary', 'updatedAt'])
+          && request.resource.data.state is string && request.resource.data.state.size() <= 500000
+          && request.resource.data.summary is string && request.resource.data.summary.size() <= 120;
+      }
+    }
+
     match /users/{userId} {
       allow read: if signedIn();
       allow create, update: if signedIn() && request.auth.uid == userId;

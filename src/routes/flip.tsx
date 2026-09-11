@@ -1,3 +1,4 @@
+import { useGameState, useGameProgress } from '@/features/friends/game-session';
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
@@ -42,14 +43,14 @@ function buildDeck(pairs: number): Card[] {
   );
 }
 
-function FlipGame() {
-  const [round, setRound] = useState(0);
-  const [deck, setDeck] = useState<Card[]>(() => buildDeck(ROUND_PAIRS[0]!));
-  const [flipped, setFlipped] = useState<string[]>([]);
-  const [matched, setMatched] = useState<string[]>([]);
-  const [seconds, setSeconds] = useState(GAME_SECONDS);
-  const [roundDone, setRoundDone] = useState(false);
-  const [favs, setFavs] = useState<string[]>([]);
+export function FlipGame() {
+  const [round, setRound] = useGameState('round', 0);
+  const [deck, setDeck] = useGameState<Card[]>('deck', () => buildDeck(ROUND_PAIRS[0]!));
+  const [flipped, setFlipped] = useGameState<string[]>('flipped', []);
+  const [matched, setMatched] = useGameState<string[]>('matched', []);
+  const [seconds, setSeconds] = useGameState('seconds', GAME_SECONDS);
+  const [roundDone, setRoundDone] = useGameState('roundDone', false);
+  const [favs, setFavs] = useGameState<string[]>('favs', []);
   const timeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const pairs = ROUND_PAIRS[round]!;
@@ -58,6 +59,7 @@ function FlipGame() {
   const won = roundComplete && isLastRound;
   const lost = seconds === 0 && !won;
   const over = won || lost;
+  useGameProgress(won ? "All rounds complete" : `Round ${round + 1} · ${matched.length}/${pairs} pairs`);
 
   useEffect(() => setFavs(getFestivalFavourites()), []);
 
@@ -104,18 +106,20 @@ function FlipGame() {
     setFlipped(next);
     if (next.length < 2) return;
 
-    const picked = next.map((k) => deck.find((c) => c.key === k)!);
-    const a = picked[0]!;
-    const b = picked[1]!;
-    if (a.festival.id === b.festival.id) {
-      timeout.current = setTimeout(() => {
-        setMatched((m) => [...m, a.festival.id]);
-        setFlipped([]);
-      }, 550);
-    } else {
-      timeout.current = setTimeout(() => setFlipped([]), 1100);
-    }
   }
+
+  // Resolve saved reveals after a refresh as well as during normal play.
+  useEffect(() => {
+    if (flipped.length !== 2) return;
+    const a = deck.find(card => card.key === flipped[0]);
+    const b = deck.find(card => card.key === flipped[1]);
+    const same = a && b && a.festival.id === b.festival.id;
+    timeout.current = setTimeout(() => {
+      if (same) setMatched(m => m.includes(a.festival.id) ? m : [...m, a.festival.id]);
+      setFlipped([]);
+    }, same ? 550 : 1100);
+    return () => { if (timeout.current) clearTimeout(timeout.current); };
+  }, [flipped, deck]);
 
   return (
     <main className="mx-auto min-h-screen w-full max-w-3xl px-4 py-6">

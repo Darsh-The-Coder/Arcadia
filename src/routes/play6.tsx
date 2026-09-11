@@ -1,3 +1,4 @@
+import { useGameState, useGameProgress } from '@/features/friends/game-session';
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import momo from "@/assets/momoexplore.png";
@@ -80,20 +81,21 @@ function Intro({ onStart }: { onStart: () => void }) {
 }
 
 export function LetsExploreGame() {
-  const [phase, setPhase] = useState<Phase>("intro-screen");
-  const [order, setOrder] = useState<Room[]>([]);
-  const [round, setRound] = useState(0);
-  const [score, setScore] = useState(0);
-  const [roundGain, setRoundGain] = useState(0);
-  const [pos, setPos] = useState(randomPenSpot);
-  const [countdown, setCountdown] = useState(PREVIEW_SECONDS);
-  const [timeLeft, setTimeLeft] = useState(0);
-  const [misses, setMisses] = useState<Miss[]>([]);
-  const [wrongClicks, setWrongClicks] = useState(0);
-  const [shake, setShake] = useState(false);
-  const [favorite, setFavorite] = useState(false);
-  const [quote, setQuote] = useState(QUOTES[0]);
+  const [phase, setPhase] = useGameState<Phase>('phase', "intro-screen");
+  const [order, setOrder] = useGameState<Room[]>('order', []);
+  const [round, setRound] = useGameState('round', 0);
+  const [score, setScore] = useGameState('score', 0);
+  const [roundGain, setRoundGain] = useGameState('roundGain', 0);
+  const [pos, setPos] = useGameState('pos', randomPenSpot);
+  const [countdown, setCountdown] = useGameState('countdown', PREVIEW_SECONDS);
+  const [timeLeft, setTimeLeft] = useGameState('timeLeft', 0);
+  const [misses, setMisses] = useGameState<Miss[]>('misses', []);
+  const [wrongClicks, setWrongClicks] = useGameState('wrongClicks', 0);
+  const [shake, setShake] = useGameState('shake', false);
+  const [favorite, setFavorite] = useGameState('favorite', false);
+  const [quote, setQuote] = useGameState('quote', QUOTES[0]);
   const roomRef = useRef<HTMLDivElement>(null);
+  useGameProgress(phase === "end" ? `Finished · ${score} points` : `Round ${round + 1} · ${score} points`);
 
   const level = LEVELS[Math.min(round, LEVELS.length - 1)] ?? LEVELS[0];
   const room = order[round];

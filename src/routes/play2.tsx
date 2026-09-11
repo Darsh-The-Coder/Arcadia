@@ -1,3 +1,4 @@
+import { useGameState, useGameProgress } from '@/features/friends/game-session';
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Heart, Play, RotateCcw, Star, Volume2 } from "lucide-react";
@@ -44,15 +45,15 @@ type Phase = "listen" | "choose" | "feedback";
 
 const FAV_KEY = "tune-with-me-favorites";
 
-function Index() {
-  const [screen, setScreen] = useState<Screen>("intro");
-  const [rounds, setRounds] = useState<Round[]>([]);
-  const [index, setIndex] = useState(0);
-  const [phase, setPhase] = useState<Phase>("listen");
-  const [picked, setPicked] = useState<TuneId | null>(null);
-  const [score, setScore] = useState(0);
-  const [favorites, setFavorites] = useState<TuneId[]>([]);
-  const [quote, setQuote] = useState(QUOTES[0]!);
+export function Index() {
+  const [screen, setScreen] = useGameState<Screen>('screen', "intro");
+  const [rounds, setRounds] = useGameState<Round[]>('rounds', []);
+  const [index, setIndex] = useGameState('index', 0);
+  const [phase, setPhase] = useGameState<Phase>('phase', "listen");
+  const [picked, setPicked] = useGameState<TuneId | null>('picked', null);
+  const [score, setScore] = useGameState('score', 0);
+  const [favorites, setFavorites] = useGameState<TuneId[]>('favorites', []);
+  const [quote, setQuote] = useGameState('quote', QUOTES[0]!);
   const timers = useRef<number[]>([]);
 
   useEffect(() => {
@@ -73,6 +74,7 @@ function Index() {
   );
 
   const round = rounds[index];
+  useGameProgress(screen === "done" ? `Finished · ${score} points` : `Round ${index + 1} · ${score} points`);
 
   const start = () => {
     primeAudio();
@@ -104,6 +106,11 @@ function Index() {
     const correct = id === round.answer.id;
     if (correct) setScore((s) => s + 20);
     playChime(correct);
+
+  };
+
+  useEffect(() => {
+    if (phase !== 'feedback' || screen !== 'play') return;
     const t = window.setTimeout(() => {
       if (index + 1 >= TOTAL_ROUNDS) {
         setQuote(QUOTES[Math.floor(Math.random() * QUOTES.length)]!);
@@ -114,8 +121,8 @@ function Index() {
         setPhase("listen");
       }
     }, 2200);
-    timers.current.push(t);
-  };
+    return () => window.clearTimeout(t);
+  }, [phase, screen, index]);
 
   const toggleFavorite = (id: TuneId) => {
     setFavorites((prev) => {

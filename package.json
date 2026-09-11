@@ -5,11 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite dev",
-    "build": "vite build",
+    "build": "vite build && node scripts/offline-manifest.mjs",
     "build:dev": "vite build --mode development",
     "preview": "vite preview",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "dev:friends:test": "vite dev --mode test --host 127.0.0.1 --port 5173",
+    "test:friends:rules": "firebase emulators:exec --only firestore --project demo-arcadia --config firebase.test.json \"node tests/friends-rules.mjs\"",
+    "test:friends:browser": "node tests/friends-browser.mjs"
   },
   "overrides": {
     "rolldown": "1.2.1"
@@ -53,6 +56,7 @@
     "cmdk": "^1.1.1",
     "date-fns": "^4.1.0",
     "embla-carousel-react": "^8.6.0",
+    "firebase": "^12.19.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.575.0",
     "react": "^19.2.0",
@@ -71,6 +75,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@firebase/rules-unit-testing": "^5.0.2",
     "@lovable.dev/vite-tanstack-config": "^2.20.0",
     "@types/node": "^22.16.5",
     "@types/react": "^19.2.0",
@@ -81,8 +86,10 @@
     "eslint-plugin-prettier": "^5.2.6",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
+    "firebase-tools": "^15.30.0",
     "globals": "^15.15.0",
     "nitro": "3.0.260603-beta",
+    "playwright": "^1.63.0",
     "prettier": "^3.7.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.56.1",

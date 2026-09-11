@@ -17,6 +17,8 @@ import { Route as FavouritesRouteImport } from './routes/favourites'
 import { Route as Favourites1RouteImport } from './routes/favourites1'
 import { Route as FestivalFavouritesRouteImport } from './routes/festival-favourites'
 import { Route as FlipRouteImport } from './routes/flip'
+import { Route as FriendRoomRouteImport } from './routes/friend-room'
+import { Route as FriendsRouteImport } from './routes/friends'
 import { Route as MarketplaceRouteImport } from './routes/marketplace'
 import { Route as Marketplace2RouteImport } from './routes/marketplace2'
 import { Route as MemoryRouteImport } from './routes/memory'
@@ -28,6 +30,7 @@ import { Route as Play4RouteImport } from './routes/play4'
 import { Route as Play5RouteImport } from './routes/play5'
 import { Route as Play6RouteImport } from './routes/play6'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SoloRouteImport } from './routes/solo'
 import { Route as SosRouteImport } from './routes/sos'
 import { Route as TalkRouteImport } from './routes/talk'
 import { Route as G22RouteImport } from './routes/g-2.2'
@@ -70,6 +73,16 @@ const FestivalFavouritesRoute = FestivalFavouritesRouteImport.update({
 const FlipRoute = FlipRouteImport.update({
   id: '/flip',
   path: '/flip',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FriendRoomRoute = FriendRoomRouteImport.update({
+  id: '/friend-room',
+  path: '/friend-room',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FriendsRoute = FriendsRouteImport.update({
+  id: '/friends',
+  path: '/friends',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MarketplaceRoute = MarketplaceRouteImport.update({
@@ -127,6 +140,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SoloRoute = SoloRouteImport.update({
+  id: '/solo',
+  path: '/solo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SosRoute = SosRouteImport.update({
   id: '/sos',
   path: '/sos',
@@ -152,6 +170,8 @@ export interface FileRoutesByFullPath {
   '/favourites1': typeof Favourites1Route
   '/festival-favourites': typeof FestivalFavouritesRoute
   '/flip': typeof FlipRoute
+  '/friend-room': typeof FriendRoomRoute
+  '/friends': typeof FriendsRoute
   '/marketplace': typeof MarketplaceRoute
   '/marketplace2': typeof Marketplace2Route
   '/memory': typeof MemoryRoute
@@ -163,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/play5': typeof Play5Route
   '/play6': typeof Play6Route
   '/settings': typeof SettingsRoute
+  '/solo': typeof SoloRoute
   '/sos': typeof SosRoute
   '/talk': typeof TalkRoute
   '/g-2/2': typeof G22Route
@@ -176,6 +197,8 @@ export interface FileRoutesByTo {
   '/favourites1': typeof Favourites1Route
   '/festival-favourites': typeof FestivalFavouritesRoute
   '/flip': typeof FlipRoute
+  '/friend-room': typeof FriendRoomRoute
+  '/friends': typeof FriendsRoute
   '/marketplace': typeof MarketplaceRoute
   '/marketplace2': typeof Marketplace2Route
   '/memory': typeof MemoryRoute
@@ -187,6 +210,7 @@ export interface FileRoutesByTo {
   '/play5': typeof Play5Route
   '/play6': typeof Play6Route
   '/settings': typeof SettingsRoute
+  '/solo': typeof SoloRoute
   '/sos': typeof SosRoute
   '/talk': typeof TalkRoute
   '/g-2/2': typeof G22Route
@@ -201,6 +225,8 @@ export interface FileRoutesById {
   '/favourites1': typeof Favourites1Route
   '/festival-favourites': typeof FestivalFavouritesRoute
   '/flip': typeof FlipRoute
+  '/friend-room': typeof FriendRoomRoute
+  '/friends': typeof FriendsRoute
   '/marketplace': typeof MarketplaceRoute
   '/marketplace2': typeof Marketplace2Route
   '/memory': typeof MemoryRoute
@@ -212,6 +238,7 @@ export interface FileRoutesById {
   '/play5': typeof Play5Route
   '/play6': typeof Play6Route
   '/settings': typeof SettingsRoute
+  '/solo': typeof SoloRoute
   '/sos': typeof SosRoute
   '/talk': typeof TalkRoute
   '/g-2/2': typeof G22Route
@@ -227,6 +254,8 @@ export interface FileRouteTypes {
     | '/favourites1'
     | '/festival-favourites'
     | '/flip'
+    | '/friend-room'
+    | '/friends'
     | '/marketplace'
     | '/marketplace2'
     | '/memory'
@@ -238,6 +267,7 @@ export interface FileRouteTypes {
     | '/play5'
     | '/play6'
     | '/settings'
+    | '/solo'
     | '/sos'
     | '/talk'
     | '/g-2/2'
@@ -251,6 +281,8 @@ export interface FileRouteTypes {
     | '/favourites1'
     | '/festival-favourites'
     | '/flip'
+    | '/friend-room'
+    | '/friends'
     | '/marketplace'
     | '/marketplace2'
     | '/memory'
@@ -262,6 +294,7 @@ export interface FileRouteTypes {
     | '/play5'
     | '/play6'
     | '/settings'
+    | '/solo'
     | '/sos'
     | '/talk'
     | '/g-2/2'
@@ -275,6 +308,8 @@ export interface FileRouteTypes {
     | '/favourites1'
     | '/festival-favourites'
     | '/flip'
+    | '/friend-room'
+    | '/friends'
     | '/marketplace'
     | '/marketplace2'
     | '/memory'
@@ -286,6 +321,7 @@ export interface FileRouteTypes {
     | '/play5'
     | '/play6'
     | '/settings'
+    | '/solo'
     | '/sos'
     | '/talk'
     | '/g-2/2'
@@ -300,6 +336,8 @@ export interface RootRouteChildren {
   Favourites1Route: typeof Favourites1Route
   FestivalFavouritesRoute: typeof FestivalFavouritesRoute
   FlipRoute: typeof FlipRoute
+  FriendRoomRoute: typeof FriendRoomRoute
+  FriendsRoute: typeof FriendsRoute
   MarketplaceRoute: typeof MarketplaceRoute
   Marketplace2Route: typeof Marketplace2Route
   MemoryRoute: typeof MemoryRoute
@@ -311,6 +349,7 @@ export interface RootRouteChildren {
   Play5Route: typeof Play5Route
   Play6Route: typeof Play6Route
   SettingsRoute: typeof SettingsRoute
+  SoloRoute: typeof SoloRoute
   SosRoute: typeof SosRoute
   TalkRoute: typeof TalkRoute
   G22Route: typeof G22Route
@@ -372,6 +411,20 @@ declare module '@tanstack/react-router' {
       path: '/flip'
       fullPath: '/flip'
       preLoaderRoute: typeof FlipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/friend-room': {
+      id: '/friend-room'
+      path: '/friend-room'
+      fullPath: '/friend-room'
+      preLoaderRoute: typeof FriendRoomRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/friends': {
+      id: '/friends'
+      path: '/friends'
+      fullPath: '/friends'
+      preLoaderRoute: typeof FriendsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/marketplace': {
@@ -451,6 +504,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/solo': {
+      id: '/solo'
+      path: '/solo'
+      fullPath: '/solo'
+      preLoaderRoute: typeof SoloRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sos': {
       id: '/sos'
       path: '/sos'
@@ -484,6 +544,8 @@ const rootRouteChildren: RootRouteChildren = {
   Favourites1Route: Favourites1Route,
   FestivalFavouritesRoute: FestivalFavouritesRoute,
   FlipRoute: FlipRoute,
+  FriendRoomRoute: FriendRoomRoute,
+  FriendsRoute: FriendsRoute,
   MarketplaceRoute: MarketplaceRoute,
   Marketplace2Route: Marketplace2Route,
   MemoryRoute: MemoryRoute,
@@ -495,6 +557,7 @@ const rootRouteChildren: RootRouteChildren = {
   Play5Route: Play5Route,
   Play6Route: Play6Route,
   SettingsRoute: SettingsRoute,
+  SoloRoute: SoloRoute,
   SosRoute: SosRoute,
   TalkRoute: TalkRoute,
   G22Route: G22Route,

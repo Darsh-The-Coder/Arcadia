@@ -1,0 +1,133 @@
+.smriti-game {
+  max-width: 800px;
+  margin: 1.5rem auto;
+  padding: 1rem;
+}
+.smriti-game button {
+  cursor: pointer;
+  min-height: 44px;
+}
+.smriti-game button:focus-visible {
+  outline: 3px solid var(--primary);
+  outline-offset: 3px;
+}
+.smriti-game .play-surface,
+.smriti-game .restore-game {
+  padding: 1rem;
+  border-radius: 1.5rem;
+  background: var(--card);
+}
+.smriti-game .turn-label {
+  text-align: center;
+  font-weight: 700;
+  padding: 1rem;
+}
+.smriti-game .memory-board {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+.smriti-game .memory-board button {
+  aspect-ratio: 1;
+  background: var(--secondary);
+  border-radius: 1rem;
+  font-size: 2rem;
+}
+.smriti-game .memory-board button.revealed {
+  background: var(--card);
+  border: 2px solid var(--primary);
+}
+.smriti-game .memory-board b,
+.smriti-game .memory-board small {
+  display: block;
+}
+.smriti-game .memory-board small {
+  font-size: 0.875rem;
+}
+.smriti-game .image-preview img {
+  width: 100%;
+  max-height: 520px;
+  object-fit: contain;
+  border-radius: 1rem;
+}
+.smriti-game .jigsaw-board {
+  display: grid;
+  gap: 0.3rem;
+  max-width: 560px;
+  margin: auto;
+}
+.smriti-game .jigsaw-board button {
+  aspect-ratio: 1;
+  border-radius: 0.4rem;
+  border: 3px solid transparent;
+}
+.smriti-game .selected {
+  outline: 4px solid var(--primary);
+  outline-offset: -4px;
+}
+.smriti-game .restore-scene {
+  position: relative;
+}
+.smriti-game .restore-scene > img {
+  width: 100%;
+  border-radius: 1rem;
+}
+.smriti-game .object-slot,
+.smriti-game .placed-object {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  width: 13%;
+  height: 15%;
+  border-radius: 0.6rem;
+}
+.smriti-game .object-slot {
+  border: 3px dashed var(--primary);
+  background: #ffffff90;
+}
+.smriti-game .object-tray {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.smriti-game .object-tray button {
+  width: 90px;
+  height: 85px;
+  border-radius: 0.6rem;
+}
+.smriti-game .completion-card {
+  padding: 1.5rem;
+  margin-top: 1rem;
+  border-radius: 1rem;
+  background: var(--secondary);
+  text-align: center;
+}
+.smriti-game .completion-card h3 {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.smriti-game .completion-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.smriti-game .completion-actions button {
+  background: var(--primary);
+  color: var(--primary-foreground);
+  padding: 0.75rem 1rem;
+  border-radius: 1rem;
+}
+@media (max-width: 480px) {
+  .smriti-game {
+    padding: 0.25rem;
+  }
+  .smriti-game .memory-board {
+    gap: 0.35rem;
+  }
+  .smriti-game .memory-board small {
+    font-size: 0.8rem;
+  }
+}

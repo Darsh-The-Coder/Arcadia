@@ -17,7 +17,7 @@ const ACTIVITY_SECTIONS = [
     blurb: "Connect and share activities together",
     icon: Users,
     tone: "bg-sun/85 text-sun-foreground",
-    to: "/family",
+    to: "/friends",
   },
   {
     id: "exercise",

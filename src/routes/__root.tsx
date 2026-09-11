@@ -1,3 +1,5 @@
+import { FriendsIdentity } from '@/features/friends/identity';
+import { OfflineGamesShell } from '@/features/friends/OfflineGamesShell';
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import {
   Outlet,
@@ -124,8 +126,8 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      {/* Keep the existing nested routes and add shared Friends identity. */}
+      <FriendsIdentity><OfflineGamesShell><Outlet /></OfflineGamesShell></FriendsIdentity>
     </QueryClientProvider>
   );
 }

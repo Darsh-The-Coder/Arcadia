@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "include": [
+    "src/features/friends/**/*.ts",
+    "src/features/friends/**/*.tsx",
+    "src/routes/friends.tsx",
+    "src/routes/friend-room.tsx",
+    "src/routes/solo.tsx",
+    "src/routeTree.gen.ts"
+  ],
+  "compilerOptions": {
+    "allowJs": false
+  }
+}

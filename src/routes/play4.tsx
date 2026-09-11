@@ -1,3 +1,4 @@
+import { useGameState, useGameProgress } from '@/features/friends/game-session';
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { ROUNDS, QUOTES, edgeKey, type ShapeRound } from "../lib/shapes";
@@ -93,15 +94,16 @@ function ShapePreview({ round }: { round: ShapeRound }) {
 }
 
 function GamePlay() {
-  const [roundIndex, setRoundIndex] = useState(0);
-  const [drawn, setDrawn] = useState<string[]>([]);
-  const [mistakes, setMistakes] = useState(0);
-  const [scores, setScores] = useState<number[]>([]);
-  const [current, setCurrent] = useState<number | null>(null);
+  const [roundIndex, setRoundIndex] = useGameState('roundIndex', 0);
+  const [drawn, setDrawn] = useGameState<string[]>('drawn', []);
+  const [mistakes, setMistakes] = useGameState('mistakes', 0);
+  const [scores, setScores] = useGameState<number[]>('scores', []);
+  const [current, setCurrent] = useGameState<number | null>('current', null);
   const [cursor, setCursor] = useState<{ x: number; y: number } | null>(null);
-  const [finished, setFinished] = useState(false);
-  const [quote, setQuote] = useState<string>(QUOTES[0]!);
-  const [saved, setSaved] = useState(false);
+  const [finished, setFinished] = useGameState('finished', false);
+  const [quote, setQuote] = useGameState<string>('quote', QUOTES[0]!);
+  const [saved, setSaved] = useGameState('saved', false);
+  useGameProgress(finished ? "All shapes complete" : `Shape ${roundIndex + 1} · ${drawn.length} lines`);
   const svgRef = useRef<SVGSVGElement | null>(null);
 
   const round = ROUNDS[roundIndex]!;
@@ -169,7 +171,7 @@ function GamePlay() {
   };
 
   useEffect(() => {
-    if (!complete) return;
+    if (!complete || finished) return;
     const roundScore = Math.max(5, 20 - mistakes * 2);
     const timer = window.setTimeout(() => {
       setScores((prev) => [...prev, roundScore]);
@@ -183,7 +185,7 @@ function GamePlay() {
       }
     }, 1100);
     return () => window.clearTimeout(timer);
-  }, [complete, mistakes, roundIndex]);
+  }, [complete, finished, mistakes, roundIndex]);
 
   const total = scores.reduce((a, b) => a + b, 0);
 
@@ -331,8 +333,8 @@ function GamePlay() {
   );
 }
 
-function Play4Container() {
-  const [isPlaying, setIsPlaying] = useState(false);
+export function Play4Container() {
+  const [isPlaying, setIsPlaying] = useGameState('isPlaying', false);
 
   if (!isPlaying) {
     return <Intro onStart={() => setIsPlaying(true)} />;

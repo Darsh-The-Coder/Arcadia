@@ -1,13 +1,9 @@
+import { FRIEND_GAMES } from '@/features/friends/catalog';
+import { Link } from '@tanstack/react-router';
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { Gamepad2, ArrowLeft, ArrowRight } from "lucide-react";
 
-const GAME_OPTIONS = [
-  { title: "Flip The Cards", blurb: "Match pairs of traditional cultural dances", route: "/play3" },
-  { title: "Tune With Me", blurb: "Explore nature sounds", route: "/play2" },
-  { title: "Connect The Dots", blurb: "Make shapes by completing the dots!", route: "/play4" },
-  { title: "MarketPlace", blurb: "Remember it!", route: "/play5" },
-  { title: "Let's Explore!", blurb: "Remember the hiding spot!", route: "/play6" },
-];
+const GAME_OPTIONS = FRIEND_GAMES;
 
 function GamesMenuPage() {
   const navigate = useNavigate();
@@ -17,21 +13,17 @@ function GamesMenuPage() {
       <header className="mb-8">
         <h1 className="text-3xl font-bold tracking-tight sm:text-4xl">Games Collection</h1>
         <p className="mt-2 text-base text-muted-foreground">
-          Choose a game from the options below.
+          Play offline on your own, or invite a friend. Your progress is saved as you play.
         </p>
       </header>
 
       <div className="grid gap-4">
         {GAME_OPTIONS.map((game, index) => (
-          <button
-            key={game.title}
+          <article key={game.title}><button
             type="button"
             onClick={() => {
-              if (game.route) {
-                window.location.href = game.route;
-              } else {
-                alert(`Opening ${game.title}...`);
-              }
+                const [to] = game.route.split("?");
+                void navigate({ to: to as never, ...(game.route.includes("?") ? { search: { game: game.id } as never } : {}) });
             }}
             className="group relative flex items-center gap-4 overflow-hidden rounded-3xl border border-border bg-card p-6 text-left shadow-soft transition-all duration-300 hover:-translate-y-1 hover:shadow-lift"
           >
@@ -43,12 +35,12 @@ function GamesMenuPage() {
                 <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-muted text-muted-foreground">{index + 1}</span>
                 <span className="text-xl font-bold tracking-tight">{game.title}</span>
               </span>
-              <span className="block text-sm text-muted-foreground mt-1">{game.blurb}</span>
+              <span className="block text-sm text-muted-foreground mt-1">{game.blurb} · Play offline / solo</span>
             </span>
             <span className="flex size-10 items-center justify-center rounded-full bg-secondary transition-transform duration-300 group-hover:translate-x-1">
               <ArrowRight className="size-5" />
             </span>
-          </button>
+          </button><Link to="/friends" search={{ game: game.id }} className="mt-2 inline-block rounded-xl bg-secondary px-5 py-3 font-semibold">Play with Friends</Link></article>
         ))}
       </div>
 

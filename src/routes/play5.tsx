@@ -1,3 +1,4 @@
+import { useGameState, useGameProgress } from '@/features/friends/game-session';
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { dishes, quotes, shuffle, type Dish } from "@/data/dishes1";
@@ -84,13 +85,14 @@ function Intro({ onStart }: { onStart: () => void }) {
 }
 
 function PlayPage() {
-  const [round, setRound] = useState(1);
-  const [setup, setSetup] = useState<RoundSetup>(() => buildRound(1));
-  const [phase, setPhase] = useState<Phase>("memorise");
-  const [picked, setPicked] = useState<string[]>([]);
-  const [score, setScore] = useState(0);
-  const [favorites, setFavorites] = useState<string[]>([]);
-  const [saved, setSaved] = useState(false);
+  const [round, setRound] = useGameState('round', 1);
+  const [setup, setSetup] = useGameState<RoundSetup>('setup', () => buildRound(1));
+  const [phase, setPhase] = useGameState<Phase>('phase', "memorise");
+  const [picked, setPicked] = useGameState<string[]>('picked', []);
+  const [score, setScore] = useGameState('score', 0);
+  const [favorites, setFavorites] = useGameState<string[]>('favorites', []);
+  const [saved, setSaved] = useGameState('saved', false);
+  useGameProgress(phase === "done" ? `Finished · ${score} points` : `Round ${round} · ${score} points`);
 
   useEffect(() => {
     try {
@@ -323,8 +325,8 @@ function DishCard({
   );
 }
 
-function Play5Container() {
-  const [isPlaying, setIsPlaying] = useState(false);
+export function Play5Container() {
+  const [isPlaying, setIsPlaying] = useGameState('isPlaying', false);
 
   if (!isPlaying) {
     return <Intro onStart={() => setIsPlaying(true)} />;
